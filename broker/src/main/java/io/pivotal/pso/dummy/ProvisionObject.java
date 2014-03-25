@@ -41,6 +41,15 @@ public class ProvisionObject {
 				break;
 			}
 		}
-	}	
+	}
+	
+	public BindingInstance getBindingInstance(String instanceId){
+		for(BindingInstance bindingInstance : bindingInstances){
+			if(bindingInstance.getInstanceId().equals(instanceId)){
+				return bindingInstance;
+			}
+		}
+		return null;
+	}
 	
 }

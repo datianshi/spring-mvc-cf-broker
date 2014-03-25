@@ -11,10 +11,14 @@ import io.pivotal.pso.domain.Catalog;
 import io.pivotal.pso.domain.ProvisionRequest;
 import io.pivotal.pso.service.ProvisionService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v2")
 public class BrokerController {
 	
+	//TODO Understand what the response of delete required
+	private final static Map<String, String> EMPTY_JSON = new HashMap<String, String>(); 
+	
 	@Autowired
 	ProvisionService provisionService;
 	
@@ -35,28 +42,28 @@ public class BrokerController {
 	}
 	
 	@RequestMapping(value = "/service_instances/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<String> provision(@PathVariable String id, @RequestBody ProvisionRequest request){
+	public ResponseEntity<BindingResponse> provision(@PathVariable String id, @RequestBody ProvisionRequest request){
 		provisionService.provision(id, request);
-		return new ResponseEntity<String>(HttpStatus.CREATED);
+		return new ResponseEntity<BindingResponse>(new BindingResponse(), HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(value = "/service_instances/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deprovision(@PathVariable String id){
+	public ResponseEntity<Map<String, String>> deprovision(@PathVariable String id){
 		provisionService.deprovision(id);
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<Map<String, String>>(EMPTY_JSON, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/service_instances/{instanceId}/service_bindings/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/service_instances/{id}/service_bindings/{instanceId}", method = RequestMethod.PUT)
 	public ResponseEntity<BindingResponse> binding(@PathVariable String instanceId, @PathVariable String id, @RequestBody BindingRequest request){
 		return new ResponseEntity<BindingResponse>(provisionService.bind(id, instanceId, request), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/service_instances/{instanceId}/service_bindings/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> unbind(@PathVariable String instanceId, @PathVariable String id, 
+	@RequestMapping(value = "/service_instances/{id}/service_bindings/{instanceId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Map<String, String>> unbind(@PathVariable String instanceId, @PathVariable String id, 
 			@RequestParam(value = "service_id", required = false) String serviceId, 
 			@RequestParam(value = "plan_id", required= false) String planId){
 		provisionService.unbind(id, instanceId);
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<Map<String, String>>(EMPTY_JSON, HttpStatus.OK);
 	}	
 	
 	

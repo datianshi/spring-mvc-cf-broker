@@ -6,9 +6,9 @@
 </head>
 <body>
 <h1>
-	Hello world!  
+	Display Vcap Service  
 </h1>
 
-<P>  The time on the server is ${serverTime}. </P>
+<P>VCAP_SERVICES is ${vcapServices}.</P>
 </body>
 </html>

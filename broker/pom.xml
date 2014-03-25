@@ -12,7 +12,6 @@
 	  </parent>
 	<properties>
 		<jetty.version>9.1.3.v20140225</jetty.version>
-		<jackson.version>1.9.10</jackson.version>
 	</properties>
 	<dependencies>
 		<!-- Logging -->
@@ -42,9 +41,14 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.3.2</version>
-		</dependency>		
+		</dependency>
 		
-				
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+            				
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -117,12 +121,6 @@
 		<version>20140107</version>
 		<scope>test</scope>
 	</dependency>  
-	  
-	<dependency>
-		<groupId>org.codehaus.jackson</groupId>
-		<artifactId>jackson-mapper-asl</artifactId>
-		<version>${jackson.version}</version>
-	</dependency>
 	
 	</dependencies>
     <build>

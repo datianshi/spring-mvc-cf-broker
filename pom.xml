@@ -13,6 +13,7 @@
 		<org.springframework-version>4.0.0.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
+		<jackson.version>1.9.10</jackson.version>
 	</properties>  
   
   <dependencies>
@@ -58,7 +59,13 @@
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-config</artifactId>
 		    <version>3.2.2.RELEASE</version>
-		  </dependency>			
+		  </dependency>
+	  
+	<dependency>
+		<groupId>org.codehaus.jackson</groupId>
+		<artifactId>jackson-mapper-asl</artifactId>
+		<version>${jackson.version}</version>
+	</dependency>		  			
   </dependencies>
   <modules>
      <module>client</module>

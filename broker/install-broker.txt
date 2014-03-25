@@ -1,0 +1,6 @@
+cf create-service-broker inmemory-map shaozhen inmemory http://shaozhen.10.244.0.34.xip.io
+cf curl /v2/service_plans/8ded5795-cb58-45cf-a900-f1644d5493b1 -X PUT -d '{"public":true}'
+cf cs dummy_service_name plan1 test-service
+cf cs dummy_service_name plan1 test-service2
+
+cf delete-service-broker inmemory-map

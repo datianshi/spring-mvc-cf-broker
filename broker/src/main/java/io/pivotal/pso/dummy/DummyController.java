@@ -8,8 +8,9 @@
 package io.pivotal.pso.dummy;
 
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,22 +27,28 @@ public class DummyController {
 	@Autowired
 	DummyRestService service;
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}/{instanceId}", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void putKey(@PathVariable String id, @RequestBody KeyValue keyValue, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
-		authentication(id, username, password);
+	public void putKey(@PathVariable String id, @PathVariable String instanceId, @RequestBody KeyValue keyValue, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
+		authentication(id, instanceId, username, password);
 		service.putKV(id, keyValue.getKey(), keyValue.getValue());
 	}
 
-	@RequestMapping(value = "/{id}/{key}", method = RequestMethod.GET)
-	public String putKey(@PathVariable String id, @PathVariable String key, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
-		authentication(id, username, password);
+	@RequestMapping(value = "/{id}/{instanceId}/{key}", method = RequestMethod.GET)
+	public String putKey(@PathVariable String id, @PathVariable String instanceId, @PathVariable String key, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
+		authentication(id, instanceId, username, password);
 		return service.getValue(id, key);
 	}
 	
+	@RequestMapping(value = "/{id}/{instanceId}", method = RequestMethod.GET)
+	public Map<String, String> getKeyValues(@PathVariable String id, @PathVariable String instanceId, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
+		authentication(id, instanceId, username, password);
+		return service.getKVs(id);
+	}	
 	
-	private void authentication(String id, String username, String password) {
-		if(!service.authenticate(id, username, password)){
+	
+	private void authentication(String id, String instanceId, String username, String password) {
+		if(!service.authenticate(id, instanceId, username, password)){
 			throw new AuthenticateException();
 		}
 	}

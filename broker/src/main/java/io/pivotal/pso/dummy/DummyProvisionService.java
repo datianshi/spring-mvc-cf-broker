@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,6 +32,8 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 	
 	public final static Catalog STATIC_CATALOG;
 	
+	Logger logger = LoggerFactory.getLogger(DummyProvisionService.class);
+	
 	static{
 		STATIC_CATALOG = new Catalog();
 		List<Service> services = new ArrayList<>();
@@ -41,12 +45,12 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 		List<Plan> plans = new ArrayList<>();
 		
 		Plan plan1 = new Plan();
-		plan1.setId("plan1");
+		plan1.setId(UUID.randomUUID().toString());
 		plan1.setDescription("Small Plan");
 		plan1.setName("plan1");
 		
 		Plan plan2 = new Plan();
-		plan2.setId("plan2");
+		plan2.setId(UUID.randomUUID().toString());
 		plan2.setDescription("Big Plan");
 		plan2.setName("plan2");
 		
@@ -55,7 +59,7 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 		
 		service.setPlans(plans);
 		
-		service.setId("dummy_service_id");
+		service.setId(UUID.randomUUID().toString());
 		service.setName("dummy_service_name");
 		service.setDescription("Dummy service to mimic how service broker works");
 		service.setBindable(true);
@@ -118,7 +122,7 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 		BindingResponse bindingResponse = new BindingResponse();
 		bindingResponse.setCredentials(credential);	
 		
-		credential.setUrl(JSONUtil.getHostNameFromVcapApplication(VcapUtil.VCAP_APPLICATION) + "/restmap/" + id);
+		credential.setUrl(JSONUtil.getHostNameFromVcapApplication(VcapUtil.VCAP_APPLICATION) + "/restmap/" + id + "/" + instanceId);
 		credential.setUsername(username);
 		credential.setPassword(password);
 		
@@ -127,20 +131,45 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 
 	@Override
 	public void unbind(String id, String instanceId) {
-		servicesStorages.get(id).removeBindingInstance(instanceId);
+		ProvisionObject po = servicesStorages.get(id);
+		if(po == null){
+			logger.info("service with id: " + id + " does not exists");
+		}
+		else{
+			servicesStorages.get(id).removeBindingInstance(instanceId);
+		}
 	}
 
 	@Override
-	public boolean authenticate(String id, String username, String password) {
-		if(username == null || password == null){
+	public boolean authenticate(String id, String instanceId, String username,
+			String password) {
+		if (username == null || password == null) {
 			return false;
 		}
-		for(BindingInstance bindingInstance : servicesStorages.get(id).getBindingInstances()){
-			if(username.equals(bindingInstance.getUsername()) && password.equals(bindingInstance.getPassword())){
-				return true;
-			}
+		BindingInstance bindingInstance = servicesStorages.get(id)
+				.getBindingInstance(instanceId);
+		
+		if(bindingInstance == null){
+			return false;
+		}
+		
+		if (username.equals(bindingInstance.getUsername())
+				&& password.equals(bindingInstance.getPassword())) {
+			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Map<String, String> getKVs(String id) {
+		ProvisionObject po = servicesStorages.get(id);
+		if(po == null){
+			logger.info("service with id: " + id + " does not exists");
+			return null;
+		}
+		else{
+			return servicesStorages.get(id).getInMemoryKV();
+		}
 	}
 
 }
