@@ -1,13 +1,24 @@
 spring-mvc-cf-broker
 ====================
+No infrastructure/cloud to start developing cloudfoundry service broker? Look at here as a Simple Java/Spring example:
 A Spring mvc based service broker that manages the in-memory hash maps as resources/services
 
-This README file walk through how to deploy the broker, provision service and bind service to the client app, as well as explain the design.
+This README file walk through how to deploy the broker, provision service and bind service to the client app.
 
+###Prerequisite
+1. Read the service Broker API
 
-###Bosh Lite installation
+http://docs.cloudfoundry.org/services/api.html
 
-In order to play this in a local environment, set up a cloudfoundry environment through bosh-lite: https://github.com/cloudfoundry/bosh-lite
+2. Bosh Lite Installation
+
+In order to play this in a local environment, set up a cloudfoundry environment through bosh-lite:
+
+https://github.com/cloudfoundry/bosh-lite
+
+3. Install cf command line and point to your local cloudfoundry environment (Setup at step 2)
+
+http://docs.cloudfoundry.org/devguide/installcf
 
 ###Deploy the service broker to the cloudfoundry as an app.
 
@@ -51,13 +62,16 @@ This service broker provided two plans, while cloudfoundry makes them as private
    
 ###Create two services
 
-   The two services are phsically two new HashMap<> instances in memory of service broker JVM
+   The two services are phsically two new HashMap<> instances in the memory of service broker JVM.
    
   ```
     cf cs dummy_service_name plan1 test-service
     cf cs dummy_service_name plan1 test-service2
+    
   ```
   
+    The above commands let cloud_controller pass in a service_id. Then the service broker creates a map with the service_id as a unique identifier. 
+    
 ###Deploy the client application to cloudfoundry
 
   ```
@@ -68,10 +82,41 @@ This service broker provided two plans, while cloudfoundry makes them as private
 
 ###Bind the client and test
 
-1. Bind the first client
+1. Bind the first service
   
   ```
     cf bind-service client test-service
+  ``` 
+
+    Cloud_Controller pass in the service_id and the client app instance_id to the service broker. Service broker creates a credential includes: RestUrl, Username, and Password that one to one map to the combination of (service_id, instance_id). Then pass back the credential to the client application as VCAP_SERVICES environment variable.
+
+2. Push some key values through browser form. The key-values are saved in the provisioned map as a service
+
+  ```
+    The form and key-values are displayed at: http://client.10.244.0.34.xip.io/map
   ```  
 
-2. Push some key values on the through browser form. The key-values are saved in the provisioned map (Created )
+    The client app pushed the key-value throught RestUrl and credentials provided inside of VCAP_SERVICES environment variables.
+
+3. Unbind the test-service and bind test-service2
+
+  ```
+    cf unbind-service client test-service
+    cf bind-service client test-service2
+    cf restart client
+  ```
+4. Create some key values on the test-service2
+
+   Since client binded to another new service, the key-values are empty at http://client.10.244.0.34.xip.io/map
+   
+5. Rebind to test-service and access the map to find the old key values input in step 2.
+
+###Explanation.....
+
+
+
+
+
+  
+
+  
