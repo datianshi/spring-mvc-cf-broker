@@ -109,9 +109,8 @@ This service broker provided two plans, while cloudfoundry makes them as private
 
    Since client binded to another new service, the key-values are empty at http://client.10.244.0.34.xip.io/map
    
-5. Rebind to test-service and access the map to find the old key values input in step 2.
+5. Rebind to test-service and access the map to find the old key values created in step 2.
 
-###Explanation.....
 
 
 
