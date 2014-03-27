@@ -2,8 +2,6 @@ package io.pivotal.pso.client;
 
 import io.pivotal.pso.client.util.VcapUtil;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import org.slf4j.Logger;
