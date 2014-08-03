@@ -106,14 +106,14 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 	}
 
 	@Override
-	public BindingResponse bind(String id, String instanceId, BindingRequest request) {
+	public BindingResponse bind(String instanceId, String bindingId, BindingRequest request) {
 		
 		
-		ProvisionObject pi = servicesStorages.get(id);
+		ProvisionObject pi = servicesStorages.get(instanceId);
 		BindingInstance bindingInstance = new BindingInstance();
 		String username = UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		bindingInstance.setInstanceId(instanceId);
+		bindingInstance.setBindingId(bindingId);
 		bindingInstance.setPassword(password);
 		bindingInstance.setUsername(username);
 		pi.addBindingInstance(bindingInstance);
@@ -122,7 +122,7 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 		BindingResponse bindingResponse = new BindingResponse();
 		bindingResponse.setCredentials(credential);	
 		
-		credential.setUrl(JSONUtil.getHostNameFromVcapApplication(VcapUtil.VCAP_APPLICATION) + "/restmap/" + id + "/" + instanceId);
+		credential.setUrl(JSONUtil.getHostNameFromVcapApplication(VcapUtil.VCAP_APPLICATION) + "/restmap/" + instanceId);
 		credential.setUsername(username);
 		credential.setPassword(password);
 		
@@ -141,23 +141,12 @@ public class DummyProvisionService implements ProvisionService, DummyRestService
 	}
 
 	@Override
-	public boolean authenticate(String id, String instanceId, String username,
+	public boolean authenticate(String id, String username,
 			String password) {
 		if (username == null || password == null) {
 			return false;
 		}
-		BindingInstance bindingInstance = servicesStorages.get(id)
-				.getBindingInstance(instanceId);
-		
-		if(bindingInstance == null){
-			return false;
-		}
-		
-		if (username.equals(bindingInstance.getUsername())
-				&& password.equals(bindingInstance.getPassword())) {
-			return true;
-		}
-		return false;
+		return servicesStorages.get(id).isAuthenticate(username, password);
 	}
 
 	@Override

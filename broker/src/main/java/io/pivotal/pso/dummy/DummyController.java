@@ -27,28 +27,28 @@ public class DummyController {
 	@Autowired
 	DummyRestService service;
 	
-	@RequestMapping(value = "/{id}/{instanceId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void putKey(@PathVariable String id, @PathVariable String instanceId, @RequestBody KeyValue keyValue, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
-		authentication(id, instanceId, username, password);
+	public void putKey(@PathVariable String id, @RequestBody KeyValue keyValue, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
+		authentication(id, username, password);
 		service.putKV(id, keyValue.getKey(), keyValue.getValue());
 	}
 
-	@RequestMapping(value = "/{id}/{instanceId}/{key}", method = RequestMethod.GET)
-	public String putKey(@PathVariable String id, @PathVariable String instanceId, @PathVariable String key, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
-		authentication(id, instanceId, username, password);
+	@RequestMapping(value = "/{id}/{key}", method = RequestMethod.GET)
+	public String putKey(@PathVariable String id, @PathVariable String key, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
+		authentication(id, username, password);
 		return service.getValue(id, key);
 	}
 	
-	@RequestMapping(value = "/{id}/{instanceId}", method = RequestMethod.GET)
-	public Map<String, String> getKeyValues(@PathVariable String id, @PathVariable String instanceId, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
-		authentication(id, instanceId, username, password);
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Map<String, String> getKeyValues(@PathVariable String id, @RequestHeader(value = "username", required = false) String username, @RequestHeader(value = "password", required = false) String password){
+		authentication(id, username, password);
 		return service.getKVs(id);
 	}	
 	
 	
-	private void authentication(String id, String instanceId, String username, String password) {
-		if(!service.authenticate(id, instanceId, username, password)){
+	private void authentication(String id, String username, String password) {
+		if(!service.authenticate(id, username, password)){
 			throw new AuthenticateException();
 		}
 	}

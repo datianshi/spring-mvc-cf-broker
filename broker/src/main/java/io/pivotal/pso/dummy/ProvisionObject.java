@@ -36,7 +36,7 @@ public class ProvisionObject {
 	
 	public void removeBindingInstance(String instanceId){
 		for(BindingInstance bindingInstance : bindingInstances){
-			if(bindingInstance.getInstanceId().equals(instanceId)){
+			if(bindingInstance.getBindingId().equals(instanceId)){
 				bindingInstances.remove(bindingInstance);
 				break;
 			}
@@ -45,11 +45,21 @@ public class ProvisionObject {
 	
 	public BindingInstance getBindingInstance(String instanceId){
 		for(BindingInstance bindingInstance : bindingInstances){
-			if(bindingInstance.getInstanceId().equals(instanceId)){
+			if(bindingInstance.getBindingId().equals(instanceId)){
 				return bindingInstance;
 			}
 		}
 		return null;
 	}
+	
+	public boolean isAuthenticate(String username, String password){
+		for(BindingInstance bindingInstance : bindingInstances){
+			
+			if(username.equals(bindingInstance.getUsername()) && password.equals(bindingInstance.getPassword())){
+				return true;
+			}
+		}
+		return false;
+	}	
 	
 }

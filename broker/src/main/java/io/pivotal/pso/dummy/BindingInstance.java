@@ -4,7 +4,7 @@ public class BindingInstance {
 	
 	String username;
 	String password;
-	String instanceId;
+	String bindingId;
 	
 	public String getUsername() {
 		return username;
@@ -23,16 +23,16 @@ public class BindingInstance {
 			return false;
 		}
 		BindingInstance bi = (BindingInstance) obj;
-		return instanceId != null && instanceId.equals(bi.getInstanceId());
+		return bindingId != null && bindingId.equals(bi.getBindingId());
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getInstanceId() {
-		return instanceId;
+	public String getBindingId() {
+		return bindingId;
 	}
-	public void setInstanceId(String instanceId) {
-		this.instanceId = instanceId;
+	public void setBindingId(String bindingId) {
+		this.bindingId = bindingId;
 	}
 	
 	

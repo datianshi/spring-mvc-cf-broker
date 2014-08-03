@@ -92,10 +92,10 @@ public class BrokerControllerTest {
 		HttpEntity<BindingRequest> request = new HttpEntity<>(bindingRequest);
 		
 		//TODO what is instanceId
-		HttpEntity<BindingResponse> response = restAuthTemplate.exchange("http://localhost:8080/v2/service_instances/service1/service_bindings/instanceId", HttpMethod.PUT, request, BindingResponse.class);
+		HttpEntity<BindingResponse> response = restAuthTemplate.exchange("http://localhost:8080/v2/service_instances/service1/service_bindings/bindingId", HttpMethod.PUT, request, BindingResponse.class);
 		BindingResponse bindingResponse = response.getBody();
 		HashMap<String, String> credentials = (HashMap<String, String>) bindingResponse.getCredentials();
-		Assert.assertEquals("localhost:8080/restmap/service1/instanceId", credentials.get("url"));
+		Assert.assertEquals("localhost:8080/restmap/service1", credentials.get("url"));
 		
 		KeyValue keyValue = new KeyValue();
 		keyValue.setKey("test-key");
@@ -106,16 +106,16 @@ public class BrokerControllerTest {
 		headers.add("password", credentials.get("password"));
 		HttpEntity<KeyValue> keyValueRequest = new HttpEntity<>(keyValue, headers);
 		
-		restTemplate.exchange("http://localhost:8080/restmap/service1/instanceId", HttpMethod.POST, keyValueRequest, String.class);
+		restTemplate.exchange("http://localhost:8080/restmap/service1", HttpMethod.POST, keyValueRequest, String.class);
 
 		HttpEntity<KeyValue> returnKeyValue = new HttpEntity<>(headers);
 		
-		Assert.assertEquals("test-value", restTemplate.exchange("http://localhost:8080/restmap/service1/instanceId/test-key", HttpMethod.GET, returnKeyValue, String.class).getBody());
+		Assert.assertEquals("test-value", restTemplate.exchange("http://localhost:8080/restmap/service1/test-key", HttpMethod.GET, returnKeyValue, String.class).getBody());
 		
 		restAuthTemplate.exchange("http://localhost:8080/v2/service_instances/service1/service_bindings/instanceId", HttpMethod.DELETE, null, String.class);
 		
 		try{
-			restTemplate.exchange("http://localhost:8080/restmap/service1/instanceId/test-key/", HttpMethod.GET, returnKeyValue, String.class);
+			restTemplate.exchange("http://localhost:8080/restmap/service1/test-key/", HttpMethod.GET, returnKeyValue, String.class);
 		}
 		catch(HttpClientErrorException e){
 			Assert.assertEquals(HttpStatus.FORBIDDEN, e.getStatusCode());

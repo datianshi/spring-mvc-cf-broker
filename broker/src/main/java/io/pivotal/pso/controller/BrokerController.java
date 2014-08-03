@@ -51,16 +51,16 @@ public class BrokerController {
 		return new ResponseEntity<Map<String, String>>(EMPTY_JSON, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/service_instances/{id}/service_bindings/{instanceId}", method = RequestMethod.PUT)
-	public ResponseEntity<BindingResponse> binding(@PathVariable String instanceId, @PathVariable String id, @RequestBody BindingRequest request){
-		return new ResponseEntity<BindingResponse>(provisionService.bind(id, instanceId, request), HttpStatus.OK);
+	@RequestMapping(value = "/service_instances/{instanceId}/service_bindings/{bindingId}", method = RequestMethod.PUT)
+	public ResponseEntity<BindingResponse> binding(@PathVariable String bindingId, @PathVariable String instanceId, @RequestBody BindingRequest request){
+		return new ResponseEntity<BindingResponse>(provisionService.bind(instanceId, bindingId, request), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/service_instances/{id}/service_bindings/{instanceId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Map<String, String>> unbind(@PathVariable String instanceId, @PathVariable String id, 
+	@RequestMapping(value = "/service_instances/{instanceId}/service_bindings/{bindingId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Map<String, String>> unbind(@PathVariable String bindingId, @PathVariable String instanceId, 
 			@RequestParam(value = "service_id", required = false) String serviceId, 
 			@RequestParam(value = "plan_id", required= false) String planId){
-		provisionService.unbind(id, instanceId);
+		provisionService.unbind(instanceId, bindingId);
 		return new ResponseEntity<Map<String, String>>(EMPTY_JSON, HttpStatus.OK);
 	}	
 	
