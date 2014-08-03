@@ -3,6 +3,8 @@ package io.pivotal.pso.client;
 import io.pivotal.pso.client.domain.KeyValue;
 import io.pivotal.pso.client.service.MapService;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,12 @@ public class MapController {
 		mapService.putKeyValue(keyValue);
 		return "redirect:map";
 	}
+	
+	@RequestMapping(value = "/env", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, String> getEnv(){
+		return System.getenv();
+	}	
 	
 	@RequestMapping(value = "/getKey/{key}", method=RequestMethod.POST)
 	public @ResponseBody String putKeyValue(@PathVariable String key){
